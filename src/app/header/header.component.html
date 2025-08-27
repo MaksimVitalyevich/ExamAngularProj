@@ -1,0 +1,29 @@
+<div class="main-nav">
+    <nav>
+        <section class="topbanner-field">
+            <ul class="topbanner-searcher">
+                <li class="searcher-li">
+                    <form [formGroup]="searchForm">
+                        <div class="search-row">
+                            <label>Поиск данных о еде (Вводить строго на английском):
+                                <input type="text" formControlName="inputFood" placeholder="Search for any food...">
+                            </label>
+                            <button type="submit" class="search-button" name="FoodTitle" (click)="printOutFood()">Поиск</button>
+                        </div>
+                    </form>
+                </li>
+            </ul>
+        </section>
+        <ul class="other-links">
+            <li>
+                <a class="link-one">Запросить готовую таблицу</a>
+            </li>
+            <li>
+                <a class="link-two">Информация (О сайте...)</a>
+            </li>
+            <li>
+                <a class="link-three">Источник (Оригинал)</a>
+            </li>
+        </ul>
+    </nav>
+</div>
