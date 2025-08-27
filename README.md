@@ -1,1 +1,1 @@
-# ExamAngularProj
+# Экзаменационный проект по Angular.
