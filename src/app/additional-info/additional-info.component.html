@@ -1,0 +1,7 @@
+<div *ngIf="item" class="additional-info">
+    <h4>Дополнительные сведения:</h4>
+    <div><b>Производитель:</b> {{ item.manufacturer }}</div>
+    <div><b>Дата выпуска:</b> {{ item.dateReleased | date:'dd:MM:yyyy' }}</div>
+    <div><b>Рейтинг:</b> {{ item.rating }}</div>
+    <div><b>ID (UUID):</b> <code>{{ item.id }}</code></div>
+</div>

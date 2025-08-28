@@ -1,4 +1,5 @@
-<app-header></app-header>
+<app-header (search)="onSearch($event)"></app-header>
 <app-ad-banner></app-ad-banner>
-<app-body></app-body>
+<app-body [items]="items" [foundCriteria]="criteria" (showDetails)="selectedItem = $event"></app-body>
+<app-additional-info [item]="selectedItem"></app-additional-info>
 <app-footer></app-footer>

@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import {FormGroup, ReactiveFormsModule, FormControl, Validators} from '@angular/forms'
+import { Component, Output, EventEmitter } from '@angular/core';
+import {FormGroup, FormControl, Validators, ReactiveFormsModule} from '@angular/forms'
 
 @Component({
   selector: 'app-header',
@@ -9,14 +9,27 @@ import {FormGroup, ReactiveFormsModule, FormControl, Validators} from '@angular/
   styleUrl: './header.component.scss'
 })
 export class HeaderComponent {
+
   searchForm = new FormGroup({
-    inputFood: new FormControl('', Validators.required)
+    inputFood: new FormControl('', Validators.required),
+    inputCategory: new FormControl('', Validators.required)
   });
 
-  formattedFoodStr: string = '';
+  @Output() search = new EventEmitter<{ product: string; category: string}>(); // Событие для передачи данных от одного места в другое
 
   printOutFood() {
-    console.log('Введено значение:', this.searchForm.value)
-    alert("Строка записана!")
+    if (this.searchForm.valid) {
+      const value = this.searchForm.value.inputFood ?? '';
+      const catValue = this.searchForm.value.inputCategory ?? '';
+      
+      console.log('Введены значения:', value, catValue);
+
+      this.search.emit({
+        product: this.searchForm.value.inputFood ?? '',
+        category: this.searchForm.value.inputCategory ?? ''
+      }) // Передаем извне, в другой компонент
+    } else {
+      alert('Внимание: Введено некорректное значение! Попробуйте снова.');
+    }
   }
 }

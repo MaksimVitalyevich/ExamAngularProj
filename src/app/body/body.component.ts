@@ -1,31 +1,54 @@
-import { Component } from '@angular/core';
-import {MatTableModule} from '@angular/material/table';
-
-export interface FoodElement {
-  productName: string;
-  manufacturer: string;
-  category: string;
-  dateReleased: string;
-  rating: number;
-  id: string;
-}
-
-const FAKE_DATA: FoodElement[] = [
-  {productName: '5 Hour Energy Pomegranate', manufacturer: 'Living Essentials', category: 'Energy Crisis', dateReleased: '2011-02-20', rating: 7, id: '0b399d91-1673-4708-ba60-f1312b037b35'},
-  {productName: 'Monster Energy Drink Regular (green)', manufacturer: 'Monster Beverage', category: 'Energy Crisis', dateReleased: '2011-02-27', rating: 5, id: 'f207579a-7e97-45fe-8c86-dec74456107f'},
-  {productName: 'Fuel', manufacturer: 'Living Essentials', category: 'Energy Crisis', dateReleased: '2011-03-06', rating: 2, id: 'aa1e5feb-a47b-4c89-b7cd-ae3c259b2f19'}
-];
+import { Component, Input, Output, OnChanges, SimpleChanges, ViewChild, EventEmitter } from '@angular/core';
+import {MatTableDataSource, MatTableModule} from '@angular/material/table';
+import { FoodItem, FoodServParserService } from '../food-serv-parser.service';
+import { MatPaginator } from '@angular/material/paginator';
+import { FoodDirDirective } from '../food-dir.directive';
 
 @Component({
   selector: 'app-body',
   standalone: true,
-  imports: [MatTableModule],
+  imports: [MatTableModule, MatPaginator, FoodDirDirective],
   templateUrl: './body.component.html',
   styleUrl: './body.component.scss'
 })
-export class BodyComponent {
-  foundFood: string = '';
+export class BodyComponent implements OnChanges {
+  @Input() items: FoodItem[] = [];
+  @Input() foundCriteria: { product: string, category: string;} | null = null;
+  @Output() showDetails = new EventEmitter<FoodItem>();
 
-  displayedColumns: string[] = ['productName', 'manufacturer', 'category', 'dateReleased', 'rating', 'id'];
-  dataSource = FAKE_DATA;
+  displayedColumns: string[] = ['productName', 'category', 'actions'];
+  dataSource = new MatTableDataSource<FoodItem>([]);
+  totalItems = 0;
+
+  pageSize = 10;
+  pageIndex = 0;
+
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+
+  constructor(private foodService: FoodServParserService) {}
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['items']) {
+      this.dataSource.data = this.items;
+      this.loadData();
+    }
+  }
+
+  openDetails(item: FoodItem) {
+    this.showDetails.emit(item);
+  }
+
+  loadData() {
+    const { product, category } = this.foundCriteria ?? { product: '', category: ''};
+    this.foodService.searchFoods(product, category, this.pageIndex + 1, this.pageSize).subscribe(response => {
+      this.dataSource.data = response.items;
+      this.totalItems = response.total;
+    })
+  }
+
+  onPageChange(event: any) {
+    this.pageIndex = event.pageIndex;
+    this.pageSize = event.pageSize;
+    this.loadData();
+  }
 }
