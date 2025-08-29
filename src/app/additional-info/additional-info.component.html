@@ -1,12 +1,9 @@
-<div class="additional-info mat-elevation-z4" *ngIf="item">
-
-    <h3>Дополнительная информация</h3>
-  
+<div *ngIf="item" style="margin-top:1rem; padding:1rem; background:#f0f0f0;" class="additional-info">
+  <h4>Дополнительные сведения продукта:</h4>
     <ul class="info-list">
-      <li><strong>Изготовитель:</strong> {{ item.manufacturer }}</li>
-      <li><strong>Дата выпуска:</strong> {{ item.dateReleased | date:'longDate' }}</li>
-      <li><strong>Рейтинг:</strong> {{ item.rating }}</li>
+      <li><strong>Manufacturer:</strong> {{ item.manufacturer }}</li>
+      <li><strong>Date Released:</strong> {{ item.dateReleased }}</li>
+      <li><strong>Rating:</strong> {{ item.rating }}</li>
       <li><strong>ID:</strong> <code>{{ item.id }}</code></li>
     </ul>
-  
 </div>

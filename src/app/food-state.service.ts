@@ -6,22 +6,21 @@ import { FoodItem } from './food-serv-parser.service';
   providedIn: 'root'
 })
 export class FoodStateService {
-  private criteriaSubject = new BehaviorSubject<{ product: string; category: string } | null>(null);
+  private criteriaSubject = new BehaviorSubject<{ product: string; category: string }>({ product: '', category: '' });
   criteria$ = this.criteriaSubject.asObservable();
 
-  private selectedItem$ = new BehaviorSubject<FoodItem | null>(null);
-
-  setCriteria(criteria: { product: string; category: string } | null) {
-    // Нормируем вход (Жесткая проверка БЕЗ undefined)
-    const normalization = criteria ? { product: (criteria.product || '').trim(), category: (criteria.category || '').trim() } : null;
-    this.criteriaSubject.next(normalization);
+  setCriteria(c: { product: string; category: string }) {
+    this.criteriaSubject.next(c);
   }
 
-  setSelectedItem(item: FoodItem | null) {
-    this.selectedItem$.next(item);
+  get criteria(): { product: string; category: string } {
+    return this.criteriaSubject.getValue();
   }
 
-  getSelectedItem() {
-    return this.selectedItem$.asObservable();
+  private selectedItemSubject = new BehaviorSubject<FoodItem | null>(null);
+  selectedItem$ = this.selectedItemSubject.asObservable();
+
+  setSelectedItem(item: FoodItem) {
+    this.selectedItemSubject.next(item);
   }
 }

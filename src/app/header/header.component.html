@@ -3,7 +3,7 @@
         <section class="topbanner-field">
             <ul class="topbanner-searcher">
                 <li class="searcher-li">
-                    <form [formGroup]="searchForm" (ngSubmit)="onSearch()">
+                    <form [formGroup]="searchForm">
                         <div class="search-row">
                             <label>Поиск данных о еде (Вводить строго на английском):
                                 <input matInput type="text" formControlName="product" placeholder="Search for any food...">
@@ -11,7 +11,6 @@
                             <label>Поиск данных по категории (Ввод строго на английском)
                                 <input matInput type="text" formControlName="category" placeholder="Search food category...">
                             </label>
-                            <button mat-raised-button type="submit" class="search-button" name="FoodTitle">Поиск</button>
                         </div>
                     </form>
                 </li>
@@ -19,13 +18,10 @@
         </section>
         <ul class="other-links">
             <li>
-                <a class="link-one">Запросить готовую таблицу</a>
+                <a class="link-two"><button type="button" (click)="siteInfo()">Информация (О сайте...)</button></a>
             </li>
             <li>
-                <a class="link-two">Информация (О сайте...)</a>
-            </li>
-            <li>
-                <a class="link-three">Источник (Оригинал)</a>
+                <a class="link-three">Источник (https://github.com/andyklimczak/TheReportOfTheWeek-API)</a>
             </li>
         </ul>
     </nav>

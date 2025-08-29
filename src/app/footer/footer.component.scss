@@ -1,0 +1,45 @@
+.fakeFood-footer {
+  width: 100%;
+  background-color: #1976d2; // насыщенный синий фон
+  color: #fff;
+  font-family: "Arial", sans-serif;
+  padding: 20px 0;
+  border-top: 1px solid #115293;
+  box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
+
+.fakeFood-lowContainer {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+
+    a {
+      color: #ffeb3b; // желтый для ссылки
+      text-decoration: underline;
+      transition: color 0.2s;
+
+      &:hover {
+        color: #fff;
+      }
+    }
+
+.author {
+      margin-top: 10px;
+
+      h3 {
+        font-size: 1rem;
+        font-weight: 600;
+        margin-bottom: 0.3rem;
+      }
+
+      p {
+        font-size: 0.85rem;
+        margin: 2px 0;
+        line-height: 1.3;
+      }
+    }
+  }
+}

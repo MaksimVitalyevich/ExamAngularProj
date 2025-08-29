@@ -5,26 +5,18 @@ import { Directive, ElementRef, Input, OnChanges, Renderer2, SimpleChanges } fro
   standalone: true
 })
 export class FoodDirDirective implements OnChanges {
-  @Input('appFoodHighlight') term: string | undefined; // то, что ищем сейчас
-  @Input() source: string = ''; // исходный текст
+  @Input() appFoodHighlight: string | undefined;
+  @Input() source: string = '';
   @Input() highlightColor: string = 'yellow';
 
-  constructor(private element: ElementRef, private renderer: Renderer2) { }
+  constructor(private el: ElementRef) {}
 
-  ngOnChanges(_: SimpleChanges): void {
-    const base = this.source ?? '';
-    const t = (this.term ?? '').trim();
-    if (!t) {
-      this.renderer.setProperty(this.element.nativeElement, 'innerText', base);
+  ngOnChanges(): void {
+    if (!this.appFoodHighlight) {
+      this.el.nativeElement.innerHTML = this.source;
       return;
     }
-
-    const regular = new RegExp(`(${this.escapeRegExp(t)})`, 'gi');
-    const html = base.replace(regular, `<span style="color:${this.highlightColor}; font-weight:700;">$1</span>`);
-    this.renderer.setProperty(this.element.nativeElement, 'innerHTML', html);
-  }
-
-  private escapeRegExp(str: string) {
-    return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const regex = new RegExp(`(${this.appFoodHighlight})`, 'gi');
+    this.el.nativeElement.innerHTML = this.source.replace(regex, `<span style="background-color:${this.highlightColor}">$1</span>`);
   }
 }

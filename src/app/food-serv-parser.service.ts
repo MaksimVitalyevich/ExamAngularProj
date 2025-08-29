@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map } from 'rxjs';
+import { Observable, catchError, of } from 'rxjs';
 
 export interface FoodItem {
   product: string;
@@ -11,6 +11,12 @@ export interface FoodItem {
   id: string;
 }
 
+export const FOOD_MOCKS: FoodItem[] = [
+  { product: 'Apple Juice', category: 'Beverage', manufacturer: 'Juice Co', dateReleased: '2022-01-01', rating: 8, id: '1' },
+  { product: 'Orange Juice', category: 'Beverage', manufacturer: 'Citrus Inc', dateReleased: '2021-05-10', rating: 7, id: '2' },
+  { product: 'Chocolate Bar', category: 'Snack', manufacturer: 'Sweet Ltd', dateReleased: '2020-12-15', rating: 9, id: '3' }
+]
+
 @Injectable({ providedIn: 'root' })
 export class FoodServParserService {
   private fakeApiUrl = 'http://localhost:3000/food';
@@ -18,14 +24,12 @@ export class FoodServParserService {
   constructor(private httpClient: HttpClient) { }
 
   // Поиск по названию продукта
-  searchFoods(product: string, category: string, page: number, limit: number) {
-    let params: any = { _page: page, _limit: limit };
-    if (product) params['product_like'] = product;
-    if (category) params['category_like'] = category;
-
-    return this.httpClient.get<FoodItem[]>(this.fakeApiUrl, {
-      params, observe: 'response'}).pipe(map(response => ({items: response.body ?? [],
-      total: Number(response.headers.get('X-Total-Count') ?? 0) }))
+  getFoods(): Observable<FoodItem[]> {
+    return this.httpClient.get<FoodItem[]>(this.fakeApiUrl).pipe(
+      catchError(err => { 
+        console.error('Ошибка загрузки db.json', err); 
+        return of([]); 
+      })
     );
   }
 }

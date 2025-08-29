@@ -1,5 +1,5 @@
-import { Component, Output, EventEmitter } from '@angular/core';
-import {FormGroup, FormControl, Validators, ReactiveFormsModule} from '@angular/forms'
+import { Component, } from '@angular/core';
+import {FormGroup, FormControl, ReactiveFormsModule} from '@angular/forms'
 import { FoodStateService } from '../food-state.service';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { MatButton } from "@angular/material/button";
@@ -14,33 +14,28 @@ import { MatButton } from "@angular/material/button";
 export class HeaderComponent {
 
   searchForm = new FormGroup({
-    product: new FormControl<string>(''),
-    category: new FormControl<string>('')
+    product: new FormControl(''),
+    category: new FormControl('')
   });
 
-  constructor(private state: FoodStateService) {
-    // Делаем живой поиск
-    this.searchForm.get('product')!.valueChanges.pipe(
-      debounceTime(300),
-      distinctUntilChanged()
-    ).subscribe(value => {
-      const category = this.searchForm.get('category')!.value ?? '';
-      // Отправляем нормированный строки (БЕЗ допуска undefined)
-      this.state.setCriteria({ product: (value || '').trim(), category: (category || '').trim() });
-    });
+  constructor(private state: FoodStateService) {}
 
-    this.searchForm.get('category')!.valueChanges.pipe(
-      debounceTime(300),
-      distinctUntilChanged()
-    ).subscribe(value => {
-      const product = this.searchForm.get('product')!.value ?? '';
-      this.state.setCriteria({ product: (product || '').trim(), category: (value || '').trim() });
-    })
+  ngOnInit(): void {
+    this.searchForm.valueChanges
+      .pipe(
+        debounceTime(200),
+        distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b))
+      )
+      .subscribe(value => {
+        this.state.setCriteria({ product: value.product?.toUpperCase() ?? '', category: value.category?.toUpperCase() ?? '' });
+      });
   }
 
-  // При комбинации getRawValue + trim - дает гарантию что НЕ попадут строки с типом undefined + отсечение лишних символов
-  onSearch() {
-    const { product, category } = this.searchForm.getRawValue();
-    this.state.setCriteria({ product: (product || '').trim(), category: (category || '').trim() });
+  siteInfo() {
+    alert('Food Product Parser - Парсер для любых продуктов по названиям и категориям, 2025');
+  }
+
+  openexternLink() {
+    window.location.search = "https://github.com/andyklimczak/TheReportOfTheWeek-API"
   }
 }
