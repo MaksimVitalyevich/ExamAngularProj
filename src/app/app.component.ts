@@ -3,14 +3,13 @@ import { RouterOutlet } from '@angular/router';
 import { HeaderComponent } from './header/header.component';
 import { AdBannerComponent } from './ad-banner/ad-banner.component';
 import { BodyComponent } from './body/body.component';
-import { AdditionalInfoComponent } from './additional-info/additional-info.component';
 import { FooterComponent } from './footer/footer.component';
 import { FoodItem } from './food-serv-parser.service';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, HeaderComponent, AdBannerComponent, BodyComponent, AdditionalInfoComponent, FooterComponent],
+  imports: [RouterOutlet, HeaderComponent, AdBannerComponent, BodyComponent, FooterComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })

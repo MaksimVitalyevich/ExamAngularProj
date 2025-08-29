@@ -1,35 +1,53 @@
 <div class="food-table">
-    <h3>Список по запросу {{ foundCriteria?.product }} {{ foundCriteria?.category }}</h3>
 
-    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 demo-table">
-    <ng-container matColumnDef="productName">
-        <th mat-header-cell *matHeaderCellDef> Имя: </th>
-        <td mat-cell *matCellDef="let element">
-            <span [appFoodHighlight]="foundCriteria?.product ?? ''" highlightColor="green">{{ element.productName }}</span>
-        </td>
+    <h3 *ngIf="criteria">Список по запросу: 
+      <span class="query">{{ criteria.product }} / {{ criteria.category }}</span>
+    </h3>
+  
+    <!-- Если нет данных -->
+    <ng-container *ngIf="dataSource.data.length; else noData">
+      
+      <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8 demo-table">
+  
+        <ng-container matColumnDef="product">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Продукт </th>
+          <td mat-cell *matCellDef="let el">
+            <span [appFoodHighlight]="criteria?.product" [source]="el.product" highlightColor="green"></span>
+          </td>
+        </ng-container>
+  
+        <ng-container matColumnDef="category">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Категория </th>
+          <td mat-cell *matCellDef="let el">
+            <span [appFoodHighlight]="criteria?.category" [source]="el.category" highlightColor="red"></span>
+          </td>
+        </ng-container>
+  
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef> Действия </th>
+          <td mat-cell *matCellDef="let el">
+            <button mat-button color="primary" (click)="openDetails(el)">Подробнее</button>
+          </td>
+        </ng-container>
+  
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns; trackBy: trackById"></tr>
+  
+      </table>
+  
+      <mat-paginator [length]="totalItems"
+                     [pageSize]="pageSize"
+                     [pageSizeOptions]="[5,10,25]"
+                     showFirstLastButtons>
+      </mat-paginator>
+  
     </ng-container>
-
-    <ng-container matColumnDef="category">
-        <th mat-header-cell *matHeaderCellDef> Категория: </th>
-        <td mat-cell *matCellDef="let element">
-            <span [appFoodHighlight]="foundCriteria?.category ?? ''" highlightColor="red">{{ element.category }}</span>
-        </td>
-    </ng-container>
-
-    <ng-container matColumnDef="actions">
-        <th mat-header-cell *matHeaderCellDef> Действие </th>
-        <td mat-cell *matCellDef="let element">
-            <button mat-button color="primary" (click)="openDetails(element)">Показать подробнее...</button>
-        </td>
-    </ng-container>
-
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-    </table>
-
-    <mat-paginator [length]="totalItems"
-    [pageSize]="pageSize"
-    [pageSizeOptions]="[5, 10, 25, 50]"
-    (page)="onPageChange($event)">
-    </mat-paginator>
-</div>
+  
+    <ng-template #noData>
+      <div class="empty">
+        Нет данных для отображения. Введите запрос и нажмите поиск.
+      </div>
+    </ng-template>
+  </div>
+  
+  <app-additional-info *ngIf="selectedItem" [item]="selectedItem"></app-additional-info>

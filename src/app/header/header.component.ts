@@ -1,35 +1,46 @@
 import { Component, Output, EventEmitter } from '@angular/core';
 import {FormGroup, FormControl, Validators, ReactiveFormsModule} from '@angular/forms'
+import { FoodStateService } from '../food-state.service';
+import { debounceTime, distinctUntilChanged } from 'rxjs';
+import { MatButton } from "@angular/material/button";
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, MatButton],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss'
 })
 export class HeaderComponent {
 
   searchForm = new FormGroup({
-    inputFood: new FormControl('', Validators.required),
-    inputCategory: new FormControl('', Validators.required)
+    product: new FormControl<string>(''),
+    category: new FormControl<string>('')
   });
 
-  @Output() search = new EventEmitter<{ product: string; category: string}>(); // Событие для передачи данных от одного места в другое
+  constructor(private state: FoodStateService) {
+    // Делаем живой поиск
+    this.searchForm.get('product')!.valueChanges.pipe(
+      debounceTime(300),
+      distinctUntilChanged()
+    ).subscribe(value => {
+      const category = this.searchForm.get('category')!.value ?? '';
+      // Отправляем нормированный строки (БЕЗ допуска undefined)
+      this.state.setCriteria({ product: (value || '').trim(), category: (category || '').trim() });
+    });
 
-  printOutFood() {
-    if (this.searchForm.valid) {
-      const value = this.searchForm.value.inputFood ?? '';
-      const catValue = this.searchForm.value.inputCategory ?? '';
-      
-      console.log('Введены значения:', value, catValue);
+    this.searchForm.get('category')!.valueChanges.pipe(
+      debounceTime(300),
+      distinctUntilChanged()
+    ).subscribe(value => {
+      const product = this.searchForm.get('product')!.value ?? '';
+      this.state.setCriteria({ product: (product || '').trim(), category: (value || '').trim() });
+    })
+  }
 
-      this.search.emit({
-        product: this.searchForm.value.inputFood ?? '',
-        category: this.searchForm.value.inputCategory ?? ''
-      }) // Передаем извне, в другой компонент
-    } else {
-      alert('Внимание: Введено некорректное значение! Попробуйте снова.');
-    }
+  // При комбинации getRawValue + trim - дает гарантию что НЕ попадут строки с типом undefined + отсечение лишних символов
+  onSearch() {
+    const { product, category } = this.searchForm.getRawValue();
+    this.state.setCriteria({ product: (product || '').trim(), category: (category || '').trim() });
   }
 }

@@ -3,15 +3,15 @@
         <section class="topbanner-field">
             <ul class="topbanner-searcher">
                 <li class="searcher-li">
-                    <form [formGroup]="searchForm">
+                    <form [formGroup]="searchForm" (ngSubmit)="onSearch()">
                         <div class="search-row">
                             <label>Поиск данных о еде (Вводить строго на английском):
-                                <input type="text" formControlName="inputFood" placeholder="Search for any food...">
+                                <input matInput type="text" formControlName="product" placeholder="Search for any food...">
                             </label>
                             <label>Поиск данных по категории (Ввод строго на английском)
-                                <input type="text" formControlName="inputCategory" placeholder="Search food category...">
+                                <input matInput type="text" formControlName="category" placeholder="Search food category...">
                             </label>
-                            <button type="submit" class="search-button" name="FoodTitle" (click)="printOutFood()">Поиск</button>
+                            <button mat-raised-button type="submit" class="search-button" name="FoodTitle">Поиск</button>
                         </div>
                     </form>
                 </li>

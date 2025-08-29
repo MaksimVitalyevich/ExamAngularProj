@@ -7,7 +7,7 @@ import { FoodItem } from './food-serv-parser.service';
 })
 export class FoodPipePipe implements PipeTransform {
 
-  transform(items: FoodItem[], criteria: { product?: string, category?: string}): {results: FoodItem[], count: number} {
+  transform(items: FoodItem[], criteria: { product?: string | undefined, category?: string | undefined} | null): {results: FoodItem[], count: number} {
     if (!items || !criteria) return {results: items ?? [], count: 0};
 
     const productSearch = criteria.product?.toLowerCase() ?? '';
